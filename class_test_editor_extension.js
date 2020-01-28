@@ -160,10 +160,10 @@ class ClassTestEditorExtension {
 	 */
 	mod(DBM) {
   
-	  DBM.DBM_Network = DBM.DBM_Network || {};
+	  DBM.ClassTestEditorExtension= ClassTestEditorExtension || {};
   
 	  // Modify "Actions.preformActions" function without losing original code.
-	  DBM.DBM_Network.Default_Functions.preformActions = DBM.Actions.preformActions;
+	  DBM.ClassTestEditorExtension.Default_Functions.preformActions = DBM.Actions.preformActions;
 	  DBM.Actions.preformActions = (msg, cmd) => {
   
 		// Get "customData" from command or event.
@@ -180,7 +180,7 @@ class ClassTestEditorExtension {
 		console.log(`Data for "${cmd.name}" command is: ${JSON.stringify(data)}`);
   
 		// Call original function
-		DBM.DBM_Network.Default_Functions.preformActions.apply(this, arguments);
+		DBM.ClassTestEditorExtension.Default_Functions.preformActions.apply(this, arguments);
 	  }
   
 	  console.log(`${this.name} extension registered!`);
