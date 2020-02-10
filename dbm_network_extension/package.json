@@ -1,18 +1,23 @@
 {
   "name": "dbm_network_extension",
   "version": "1.0.0",
-  "description": "To simplify the management of dbm action modifications",
-  "main": "../actions/dbm_mods_extension.js",
+  "description": "To simplify the management of dbm modifications",
+  "main": "../dbm_mods_extension.js",
   "dependencies": {
-    "bootstrap": "^4.4.1",
+    "fast-safe-stringify": "^2.0.7",
     "jquery": "^3.4.1",
+    "module-alias": "^2.2.2",
     "popper": "^1.0.1",
     "simple-git": "^1.130.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:src": "node ./src/index.js"
   },
   "author": "DBM Network",
-  "license": "MIT"
+  "license": "MIT",
+  "_moduleAliases": {
+    "@root": "src",
+    "@utils": "src/Utils"
+  }
 }

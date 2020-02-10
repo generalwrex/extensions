@@ -1,3 +1,5 @@
+const path = require("path"),
+	fs = require("fs");
 /**
  * DBM Network Extension
  * (put your name if you contrib)
@@ -32,7 +34,7 @@ class DBM_Network {
 	  // are also the names of the fields stored in the command's/event's JSON data.
 	  this.fields = [];
   
-	  this.path = require('path').join(__dirname, "dbm_network_extension"),
+	  this.path = path.join(__dirname, "dbm_network_extension"),
   
 		// The default values of the fields.
 		this.defaultFields = {
@@ -40,6 +42,15 @@ class DBM_Network {
 		}
 	}
   
+	/**
+	 * RequireEX - Require Extension
+	 * 
+	 * @param {*} module Requires the module from the extensions node modules folder.
+	 */
+	requireEX(module){
+		return require(path.join(this.path, "node_modules", module ));
+	}
+
 	/**
 	 * Extension Dialog Size
 	 *
@@ -61,21 +72,12 @@ class DBM_Network {
 	html(data) {
 	  return `
 			<div style="padding: 10px 10px 10px 10px;">
-			<div class="ui four column grid">
-			  
-			  <div class="row">
-				  <div class="column"></div>
-				  <div class="column"></div>
-				  <div class="column"></div>
-			  </div>
-			  <div class="column"></div>
-			  <div class="column"></div>
-			  <div class="column"></div>
-			  <div class="column"></div>
-			  </div>
-  
-				<img class="ui fluid image" src="${this.path}/images/network-logo.gif">
-			</div>`
+				<div class="control"> <a id="main-button" class="button is-info"> <i class="fas fa-download"></i></a> </div>
+			</div>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">		  
+			<script src="https://kit.fontawesome.com/9f46650366.js" crossorigin="anonymous"></script>	  
+			`
 	}
   
 	/**
@@ -101,52 +103,6 @@ class DBM_Network {
 	close(document, data) {
 	  //data.input1 = parseInt(document.getElementById("input1").value);
 	  //data.input2 = parseInt(document.getElementById("input2").value);
-	}
-  
-  
-	/** 
-	 * Extension On Load
-	 *
-	 * If an extension has a function for "load", it will be called
-	 * whenever the editor loads data.
-	 *
-	 * @param {*} DBM - The "DBM" parameter is the global variable. Store loaded data within it.
-	 * @param {*} projectLoc  - contains the project directory path
-	 */
-	load(DBM, projectLoc) {
-  
-	  let txt = "{}";
-	  const filepath = require('path').join(projectLoc, 'data', 'thisistest.json');
-	  if (require('fs').existsSync(filepath)) {
-		txt = require('fs').readFileSync(filepath).toString();
-	  }
-	  DBM.__myCustomData = JSON.parse(txt);
-	}
-  
-	/**
-	 * Extension On Save
-	 *
-	 * If an extension has a function for "save", it will be called
-	 * whenever the editor saves data.
-	 *
-	 * The "data" parameter contains all data. Use this to modify
-	 * the data that is saved. The properties correspond to the
-	 * data file names:
-	 *
-	 *  - data.commands
-	 *  - data.settings
-	 * etc...
-	 * 
-	 * @param {*} DBM
-	 * @param {*} data
-	 * @param {*} projectLoc
-	 */
-  
-	save(DBM, data, projectLoc) {
-	  if (!DBM.__myCustomData) return;
-	  if (!DBM.__myCustomData.number) DBM.__myCustomData.number = 0;
-	  DBM.__myCustomData.number++;
-	  data.thisistest = DBM.__myCustomData;
 	}
   
 	/**
