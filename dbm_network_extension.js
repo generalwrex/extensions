@@ -4,7 +4,7 @@ const path = require("path"),
  * DBM Network Extension
  * (put your name if you contrib)
  * General Wrex
- * Deus Corvi
+ * Danno3817
  * Created for the DBM Network and its users.
  * @class DBM_Network
  */
@@ -16,7 +16,18 @@ class DBM_Network {
 	  // This is the name of the editor extension displayed in the editor.
 	  this.name = 'DBM Network Extension',
   
-		this.version = "0.1 Alpha";
+	  // these variables will be used by a custom installer (Optional, but nice to have)
+	  this.authors = ["GeneralWrex", "Danno3817"]
+	  this.version = "1.0.0";
+	  this.changeLog = [{v:"1.0.0",desc:"Initial Version"}]
+	  this.shortDescription = "Extension to make managing DBM Network Additions easy."
+	  this.longDescription = ""
+	  this.requiredNodeModules = [
+		  {name:"simple-git", version: "latest"},
+		  {name:"module-alias", version: "latest"},
+		]
+	  // these variables will be used by a custom installer	  
+
 	  // Must be true to appear in "command" context menu.
 	  // This means each "command" will hold its own copy of this data.
 	  this.isCommandExtension = false;
@@ -71,13 +82,35 @@ class DBM_Network {
 	 */
 	html(data) {
 	  return `
-			<div style="padding: 10px 10px 10px 10px;">
-				<div class="control"> <a id="main-button" class="button is-info"> <i class="fas fa-download"></i></a> </div>
-			</div>
-			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">		  
-			<script src="https://kit.fontawesome.com/9f46650366.js" crossorigin="anonymous"></script>	  
-			`
+	  <!DOCTYPE html>
+	  <html lang="en">
+	  
+	  <head>
+		  <meta charset="UTF-8">
+		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+		  <title>Document</title>
+		  <style>
+			  html,
+			  body {
+				  text-align: center;
+				  height: 100%;
+				  width: 100%;
+				  background-color: #23272a;
+			  }
+		  </style>
+		  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">		  
+		  <script src="https://kit.fontawesome.com/9f46650366.js" crossorigin="anonymous"></script>	
+	  </head>
+	  
+	  <body>
+		  <div class="container has-text-centered"> <label class="label">Current owners</label>	  
+			  <div class="control"> <a id="main-button" class="button is-info"> <i class="fas fa-download"></i></a> </div> 
+		  </div>
+	  </body>
+	  
+	  </html>`
 	}
   
 	/**
