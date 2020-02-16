@@ -155,31 +155,6 @@ class DBM_Network {
 	 * @param {*} DBM
 	 */
 	mod(DBM) {
-  
-	  DBM.DBM_Network = DBM.DBM_Network || {};
-  
-	  // Modify "Actions.preformActions" function without losing original code.
-	  DBM.DBM_Network.Default_Functions.preformActions = DBM.Actions.preformActions;
-	  DBM.Actions.preformActions = (msg, cmd) => {
-  
-		// Get "customData" from command or event.
-		const customData = cmd.customData;
-  
-		// Get the data unique to this extension.
-		const data = customData ? customData["Test Extension"] : null;
-  
-		// Do something with the data.
-		// For example:
-		//
-		// if(data.input1 == 20) return; // do not run the command
-  
-		console.log(`Data for "${cmd.name}" command is: ${JSON.stringify(data)}`);
-  
-		// Call original function
-		DBM.DBM_Network.Default_Functions.preformActions.apply(this, arguments);
-	  }
-  
-	  console.log("DBM Network Extension registered!");
 	}
   
   }
