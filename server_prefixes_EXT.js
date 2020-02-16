@@ -1,4 +1,4 @@
-module.exports = {
+const extension = module.exports = {
 
     //---------------------------------------------------------------------
     // Editor Extension Name
@@ -6,7 +6,7 @@ module.exports = {
     // This is the name of the editor extension displayed in the editor.
     //---------------------------------------------------------------------
 
-    name: "Multiple Bot Owners",
+    name: "Server Prefixes Config",
 
     //---------------------------------------------------------------------
     // Is Command Extension
@@ -57,9 +57,10 @@ module.exports = {
     authors: ["GeneralWrex"],
     version: "1.0.0",
     changeLog: "Initial Release",
-    shortDescription: "Overrides a bot.js method to allow multiple bot owners.",
+    shortDescription: "Overrides a bot.js method to allow server prefixes.",
     longDescription: "",
     requiredNodeModules: [],
+    datafile: 'serverPrefixes.json',
 
     //---------------------------------------------------------------------
     // Extension Dialog Size
@@ -98,13 +99,7 @@ module.exports = {
 				  border-bottom-right-radius: 0px !important;
 			  }
 	  
-			  .currentowners {
-				  max-height: 150px;
-				  height: 150px;
-				  overflow-y: scroll !important;
-				  overflow-x: hidden;
-			  }
-	  
+  
 			  .container {
 				  margin-left: 15% !important;
 				  margin-right: 15% !important;
@@ -123,15 +118,11 @@ module.exports = {
 		  <script src="https://kit.fontawesome.com/9f46650366.js" crossorigin="anonymous"></script>	  
 
 		  <div class="container has-text-centered"> 
-		      <p><br>Created By ${this.authors.join(', ')}<br></p>
-		      <br>The addition or removal of owners requires a bot restart.<br><br>
+              <p><br>Created By ${extension.authors.join(', ')}<br></p>
+              <a onclick="require('child_process').execSync('start https://www.patreon.com/bePatron?u=8722862')">Like this? Join Patreon!</a>		      
+              <br>Changing these options requires a bot restart.<br><br>
 		  	  <label class="label">Current Owners</label>
-			  <div class="currentowners" id="current-owners">
-
-			  </div><label class="label">Add owners</label>
-			  <div class="field has-addons"> <input id="ownerinput" class="input" type="text" placeholder="User ID">
-				  <div class="control"> <a class="button is-info" onclick="document.addOwner()"> <i class="fas fa-plus"></i> </a> </div>
-			  </div>
+               
 		  </div>	
 		  `
     },
@@ -150,68 +141,12 @@ module.exports = {
             const fs = require('fs'),
                 path = require('path');
 
-            const filepath = path.join(__dirname, "../data", 'multiple_bot_owners.json');
+            const filepath = path.join(__dirname, "../data", extension.datafile);
 
-            let botOwners = [];
-
-            function loadOwners() {
-                if (!fs.existsSync(filepath)) {
-                    fs.writeFileSync(filepath, JSON.stringify(botOwners));
-                } else {
-                    botOwners = JSON.parse(fs.readFileSync(filepath, "utf8"));
-                }
-
-                botOwners.forEach(owner => {
-                    if (owner && /^\d+$/.test(owner)) {
-                        addOwnerHTML(owner);
-                    }
-                })
-			}
-			
-			function addOwnerHTML(owner) {
-                document.getElementById('current-owners').innerHTML += `
-				<div class="field has-addons" id="${owner}_DIV"> <input id="${owner}_INPUT" class="input" type="text" placeholder="User ID" disabled 
-				value="${owner}">
-					<div class="control"> <a class="button is-info" onclick="document.delOwner(document.getElementById('${owner}_INPUT'))"> <i class="fas fa-minus"></i> </a> </div>
-				</div>
-				`;
-			}
-			
-            document.delOwner = function(element) {
-                const owner = element && element.value
-                if (!owner) return;
-
-
-                document.getElementById(`${owner}_DIV`).parentNode.removeChild(element);
-                botOwners.splice(botOwners.indexOf(owner), 1);
-
-                fs.writeFileSync(filepath, JSON.stringify(botOwners, null, 2));
-
-                alert(`${owner} was removed.`)
-            }
-
-            document.addOwner = function(owner = false) {
-
-                if (!owner) owner = document.getElementById('ownerinput').value
-
-                if (!owner) {
-                    return alert(`MultipleBotOwners\nYou must enter a value!`)
-                } else if (!/^\d+$/.test(owner)) {
-                    return alert(`MultipleBotOwners\nThe inputted value can only be a discord ID.\nYou put ${owner}.`)
-                } else if (botOwners.includes(owner)) {
-                    return alert(`MultipleBotOwners\nThat ID already exists!.`)
-                }
-
-                addOwnerHTML(owner);
-                botOwners.push(owner);
-                fs.writeFileSync(filepath, JSON.stringify(botOwners));
-
-                return "ADDED";
-            }
-            loadOwners();
+            
 
         } catch (error) {
-            alert("MultipleBotOwners Error: \n" + error)
+            alert(`${extension.name} Extension Error:\n${error}`)
         }
 
     },
@@ -248,51 +183,19 @@ module.exports = {
             Files,
             Actions
         } = DBM;
-
-        const fs = require('fs'),
+        
+        try {
+            const fs = require('fs'),
             path = require('path');
 
+            const filepath = path.join(__dirname, "../data", extension.datafile);
 
-        try {
-            const filepath = path.join(__dirname, "../data", 'multiple_bot_owners.json');
-
-            let botOwners = [];
-
-            if (!fs.existsSync(filepath)) {
-                fs.writeFileSync(filepath, JSON.stringify(botOwners));
-            } else {
-                botOwners = JSON.parse(fs.readFileSync(filepath, "utf8"));
-            }
-
-            Actions.checkConditions = function(msg, cmd) {
-                const isServer = Boolean(msg.guild && msg.member);
-                const restriction = parseInt(cmd.restriction);
-                const permissions = cmd.permissions;
-                switch (restriction) {
-                    case 0:
-                        if (isServer) {
-                            return this.checkPermissions(msg, permissions);
-                        } else {
-                            return true;
-                        }
-                        case 1:
-                            return isServer && this.checkPermissions(msg, permissions);
-                        case 2:
-                            return isServer && msg.guild.owner === msg.member;
-                        case 3:
-                            return !isServer;
-                        case 4:
-                            return botOwners.length > 0 && botOwners.includes(msg.author.id) ||
-                                Files.data.settings.ownerId && msg.author.id === Files.data.settings.ownerId;;
-                        default:
-                            return true;
-                }
-            };
+          
         } catch (error) {
-            console.error("MultipleBotOwners_ERROR:\n" + error)
+            console.error(`${extension.name} Extension Error:\n${error}`)
         }
 
-        console.log('Multiple Bot Owners Extension Loaded!');
+        console.log(`${extension.name} Extension Loaded!`);
     }
-
+   
 }; // End of module
