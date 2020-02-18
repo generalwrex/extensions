@@ -6,7 +6,7 @@ const extension = module.exports = {
     // This is the name of the editor extension displayed in the editor.
     //---------------------------------------------------------------------
 
-    name: "Server Assigned Prefixes",
+    name: "Command Metrics",
 
     //---------------------------------------------------------------------
     // Is Command Extension
@@ -15,7 +15,7 @@ const extension = module.exports = {
     // This means each "command" will hold its own copy of this data.
     //---------------------------------------------------------------------
 
-    isCommandExtension: false,
+    isCommandExtension: true,
 
     //---------------------------------------------------------------------
     // Is Event Extension
@@ -118,11 +118,9 @@ const extension = module.exports = {
 		  <script src="https://kit.fontawesome.com/9f46650366.js" crossorigin="anonymous"></script>	  
 
           <div class="container has-text-centered"> 
-            <label class="label">Server Assigned Prefixes</label>
+            <label class="label">Command Metrics</label>
             <p><br>Created By ${extension.authors.join(', ')}<br></p>
             <a onclick="require('child_process').execSync('start https://www.patreon.com/bePatron?u=8722862')">Like this? Join Patreon!</a><br><br>		      
-
-            Servers With Custom Prefixes!: <p id="amount">0</p>
 
           </div>	        
 		  `
@@ -138,41 +136,8 @@ const extension = module.exports = {
 
     init: function(document, data) {
 
-    
         try {
-            const fs = require('fs'),
-                path = require('path');
-
-            const settings = require(path.join(__dirname, "../data", "settings.json"))
-            const events = require(path.join(__dirname, "../data", "events.json"))
-            const defaultTag = settings && settings.tag;
-
-            const filePath = path.join(__dirname, "../data", extension.datafile);
-
-            if(fs.existsSync(filePath)){
-
-                let amount = 0;
-                let prefixes = {}
-
-                if(events.find(ev=> ev &&  ev._id === "serverprefixes")) return alert('You must remove the Event "Load Server Prefixes" to use this extension. Then Restart DBM.');
-
-                try {
-                    prefixes = JSON.parse(fs.readFileSync(filePath, "utf8"));	
-                } catch (error) {
-                    alert(`Could not parse serverPrefixes.json\n\nCheck\n${filePath}\nfor any errors\n  If the issue can't be resolved then, replace all text within the file with with {}`)     
-                }
-
-                try {
-                    for (const server in prefixes) {
-                        if(String(prefixes[server]) !== defaultTag) amount+=1;
-                    }
-                    document.getElementById('amount').innerHTML = amount;
-                } catch (error) {
-                    alert(error);
-                }
-                	
-            }
-    
+       
         } catch (error) {
             alert(`${extension.name} Extension Error:\n${error}`)
         }
@@ -206,92 +171,51 @@ const extension = module.exports = {
 
     mod: function(DBM) {
 
+        return;
+        
+        const fs = require('fs'),
+        path = require('path');
+
         const {
             Files,
             Actions,
             Bot
         } = DBM;
         
-        try {
-            const fs = require('fs'),
-            path = require('path');
+        const metrics = {};
+        if (!fs.existsSync(filepath)) {
+            fs.writeFileSync(filepath, JSON.stringify(botOwners));
+        } else {
+            botOwners = JSON.parse(fs.readFileSync(filepath, "utf8"));
+        }
 
-            const filePath = path.join(__dirname, "../data", extension.datafile);
+		// Let's make our own namespace like the chads we are.
+		DBM.Command_Metrics = DBM.Command_Metrics || {};
+	
+		// Modify "Actions.preformActions" function without losing original code.
+		DBM.Command_Metrics.preformActions = DBM.Actions.preformActions;
+		DBM.Actions.preformActions = function(msg, cmd) {
+	
+            try {
 
-            Bot.prefixes = {};                   
-            Bot.checkPrefixes = function(msg){
-                try {
-                    let tag = Files.data.settings.tag;
-                    let guild = msg && msg.guild ? msg.guild : false; 
-                    let content = msg.content;
+                const filePath = path.join(__dirname, "../data", extension.datafile);
 
-                    if(guild){    
+                if(cmd.comType !== "3"){
 
-                        this.prefixes[guild.id] = tag;
 
-                        if(fs.existsSync(filePath)){
-                            const prefixes = fs.readFileSync(filePath, "utf8");
-                            try {
-                                this.prefixes = JSON.parse(prefixes);		
-                            } catch(err){}			
-                        }else{
-                            
-                            fs.writeFileSync(filePath, JSON.stringify(this.prefixes));
-                        }   
-
-                        tag = this.prefixes[guild.id];
-                        guild.tag = tag;  // set it to msg.guild.tag or server.tag          
-                             
-                    }
-            
-                    if(content.startsWith(tag)) {	 
-
-                        const separator = Files.data.settings.separator || '\\s+';
-                        content = content.split(new RegExp(separator))[0];	
-
-                         let command = content.substring(tag.length);
-                        if(command) {       
-                            if(!this._caseSensitive) {
-                                command = command.toLowerCase();
-                            }
-                            const cmd = this.$cmds[command];
-                            if(cmd) {					
-                               Actions.preformActions(msg, cmd);
-                               return true;
-                            }
-                        }				
-                    }
-                                            		
-                } catch (e) {
-                    console.error(e);
+                    msg.guild.members.get(msg.author.id).setData('metrics', metrics)
+                    console.log(com.name ,com.times)
                 }
-                return false;
+      
+            } catch (error) {
+                console.error(`${extension.name} Extension Error:\n${error}`)
             }
 
-            // need to overwrite the function, cant call the original
-            Bot.checkCommand = function(msg) {
-                let command = this.checkTag(msg.content);
-
-                if(this.checkPrefixes(msg)) return true;
-
-                if(command) {
-                    if(!this._caseSensitive) {
-                        command = command.toLowerCase();
-                    }
-                    const cmd = this.$cmds[command];
-                    if(cmd) {
-                        Actions.preformActions(msg, cmd);
-                        return true;
-                    }        
-                }
-                return false;
-            };
-
-            console.log(`${extension.name} Extension Loaded!`);
-        } catch (error) {
-            console.error(`${extension.name} Extension Error:\n${error}`)
-        }
-        
+			// Call original function
+			DBM.Command_Metrics.preformActions.apply(this, arguments);
+		}
+	
+		console.log("Test Editor Extension registered!");
     }
    
 }; // End of module
