@@ -81,36 +81,18 @@ class DBM_Network {
 	 * @returns {string} A string containing the HTML used for the context menu dialog.
 	 */
 	html(data) {
-	  return `
-	  <!DOCTYPE html>
-	  <html lang="en">
-	  
-	  <head>
-		  <meta charset="UTF-8">
-		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-		  <title>Document</title>
-		  <style>
-			  html,
-			  body {
-				  text-align: center;
-				  height: 100%;
-				  width: 100%;
-				  background-color: #23272a;
-			  }
-		  </style>
-		  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">		  
-		  <script src="https://kit.fontawesome.com/9f46650366.js" crossorigin="anonymous"></script>	
-	  </head>
-	  
-	  <body>
-		  <div class="container has-text-centered"> <label class="label">Current owners</label>	  
-			  <div class="control"> <a id="main-button" class="button is-info"> <i class="fas fa-download"></i></a> </div> 
-		  </div>
-	  </body>
-	  
-	  </html>`
+		return `
+		<div style="overflow-y: scroll; overflow-x: hidden; width: 100%;">
+			<center>
+				<div style="margin: auto">
+					<p style="color: #D47522; font-size: 45px; font-weight: 600; font-family: Arial, Helvetica, sans-serif;">DBM Modifications</p><br>
+					<img src="${__dirname}/dbm_network_extension/images/network-logo.png" style="hight: 20px; margin-top: -55px;" alt=""><br><br>
+					<p style="font-size: large">Manage DBM Mods, Events, and Extensions.<br>Join us today <a href="https://discordapp.com/invite/3QxkZPK">here</a>!</p><br>
+					<button class="ui button" margin-top: -10px;">Install Modifications</button>
+				</div>
+			</center>
+		</div>
+		`
 	}
   
 	/**
