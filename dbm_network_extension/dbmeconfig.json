@@ -1,0 +1,29 @@
+{   "repos": {
+        "actions":{
+            "url":"https://github.com/dbm-network/mods.git", 
+            "structure":"./actions/(FILES)",
+            "path":"../actions/"
+        },
+        "events":{
+            "url":"https://github.com/dbm-network/events.git", 
+            "structure":"./events/(FILES)",
+            "path":"../events/"
+        },
+        "extensions":{
+            "url":"https://github.com/dbm-network/extensions.git", 
+            "structure":"./extensions/(FOLDERS)/",
+            "path":""
+        },
+        "translations":{
+            "url":"https://github.com/dbm-network/translations.git", 
+            "structure":"./(FOLDERS)",
+            "path":"DBM/translations/"
+        },
+        "themes":{
+            "url":"https://github.com/dbm-network/themes.git", 
+            "structure":"./(FOLDERS)",
+            "path":"DBM/themes/"
+        }
+    }
+    
+}
