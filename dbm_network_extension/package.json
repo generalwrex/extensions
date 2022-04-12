@@ -10,7 +10,7 @@
     "nodegit": "^0.26.4",
     "nothing": "^0.1.0",
     "popper": "^1.0.1",
-    "simple-git": "^1.131.0"
+    "simple-git": "^3.5.0"
   },
   "devDependencies": {},
   "scripts": {
